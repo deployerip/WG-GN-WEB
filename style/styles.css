@@ -393,7 +393,7 @@ footer {
   border-top: 1px solid rgba(255, 255, 255, 0.15);
 }
 
-footer a {
+.footer-links a {
   color: #74b9ff;
   text-decoration: none;
   margin: 0 20px;
@@ -403,12 +403,17 @@ footer a {
   transition: color 0.3s ease;
 }
 
-footer a:hover {
+.footer-links a:hover {
   color: #a3d1ff;
   text-decoration: underline;
 }
 
-footer .ip-info {
+.footer-note {
+  margin-top: 15px;
+  font-size: 14px;
+}
+
+.ip-info {
   margin-top: 15px;
   font-size: 14px;
 }
@@ -418,9 +423,154 @@ footer .ip-info {
   text-align: center;
 }
 
+.config-preview {
+  margin: 20px auto;
+}
+
+.config-preview img {
+  max-width: 100px;
+  border-radius: 10px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+}
+
 .inline-buttons {
   display: flex;
   justify-content: center;
   gap: 20px;
   flex-wrap: wrap;
+}
+
+.intro-section {
+  text-align: center;
+  margin-bottom: 40px;
+  padding: 20px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 15px;
+}
+
+.intro-section h2 {
+  font-size: 32px;
+  color: #1e3c72;
+  margin-bottom: 15px;
+}
+
+.intro-section p {
+  font-size: 18px;
+  color: #555;
+  max-width: 700px;
+  margin: 0 auto 20px;
+}
+
+.intro-features {
+  display: flex;
+  justify-content: center;
+  gap: 30px;
+  flex-wrap: wrap;
+}
+
+.feature-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 16px;
+  color: #2a5298;
+  font-weight: 500;
+}
+
+.feature-item i {
+  font-size: 24px;
+  color: #55efc4;
+}
+
+.cta-btn {
+  background: #55efc4;
+  color: #333;
+  padding: 15px 40px;
+  font-size: 18px;
+  margin-top: 20px;
+}
+
+.cta-btn:hover {
+  background: #81fce0;
+}
+
+.how-to-use {
+  margin: 30px 0;
+  padding: 20px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 15px;
+}
+
+.how-to-use ol {
+  list-style-position: inside;
+  margin-left: 20px;
+  font-size: 16px;
+  color: #444;
+}
+
+.how-to-use li {
+  margin: 10px 0;
+}
+
+.how-to-use strong {
+  color: #2a5298;
+}
+
+.how-to-use p {
+  margin-top: 15px;
+  font-style: italic;
+  color: #666;
+}
+
+.about-section {
+  margin-top: 40px;
+  padding: 20px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 15px;
+}
+
+.about-content {
+  display: flex;
+  justify-content: space-around;
+  gap: 20px;
+  flex-wrap: wrap;
+}
+
+.about-item {
+  flex: 1;
+  min-width: 250px;
+  text-align: center;
+}
+
+.about-item h3 {
+  font-size: 24px;
+  color: #2a5298;
+  margin-bottom: 10px;
+}
+
+.about-item p {
+  font-size: 16px;
+  color: #555;
+}
+
+.troubleshooting {
+  margin-top: 40px;
+  padding: 20px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 15px;
+}
+
+.troubleshooting ul {
+  list-style-type: disc;
+  margin-left: 40px;
+  font-size: 16px;
+  color: #444;
+}
+
+.troubleshooting li {
+  margin: 10px 0;
+}
+
+.troubleshooting strong {
+  color: #2a5298;
 }
