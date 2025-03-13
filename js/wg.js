@@ -24,6 +24,7 @@ const ipv6CountInput = document.getElementById('ipv6-count');
 const backButtons = document.querySelectorAll('.back-btn');
 const qrPopup = document.getElementById('qr-popup');
 const qrCloseBtn = document.querySelector('.qr-close-btn');
+const ctaBtn = document.querySelector('.cta-btn');
 
 let ipv4List = [];
 let ipv6List = [];
@@ -146,6 +147,10 @@ homeBtn.addEventListener('click', () => {
     wireguardPurpose.classList.remove('hidden');
 });
 
+ctaBtn.addEventListener('click', () => {
+    wireguardPurpose.scrollIntoView({ behavior: 'smooth', block: 'start' });
+});
+
 async function generatePersonalConfig(peerCount, ipv4Count, ipv6Count) {
     try {
         showSpinner();
@@ -173,6 +178,7 @@ async function generatePersonalConfig(peerCount, ipv4Count, ipv6Count) {
         }
     } catch (error) {
         console.error('Error processing configuration:', error);
+        showPopup('Error generating configuration. Please try again.');
     } finally {
         hideSpinner();
         getConfigBtn.disabled = false;
@@ -239,6 +245,7 @@ MTU = 1280`;
         }
     } catch (error) {
         console.error('Error processing configuration:', error);
+        showPopup('Error generating DNS configuration. Please try again.');
     } finally {
         hideSpinner();
         scrollToConfig();
@@ -328,6 +335,9 @@ const updateDOMWithQR = (container, title, textareaId, content, messageId, qrId)
     if (container.classList.contains('wire-guard-config')) {
         container.innerHTML = `
             <h2><i class="fas fa-code"></i> ${title}</h2>
+            <div class="config-preview">
+                <img src="https://via.placeholder.com/100x100.png?text=Config+Preview" alt="Config Preview">
+            </div>
             <button class="download-icon-btn" id="wireguard-download-btn">
                 <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                     <path d="M19 3H5a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2V5a2 2 0 00-2-2zM12 16l-4-4h3V8h2v4h3l-4 4z" />
@@ -340,6 +350,9 @@ const updateDOMWithQR = (container, title, textareaId, content, messageId, qrId)
     } else {
         container.innerHTML = `
             <h2><i class="fas fa-code"></i> ${title}</h2>
+            <div class="config-preview">
+                <img src="https://via.placeholder.com/100x100.png?text=V2Ray+Preview" alt="V2Ray Preview">
+            </div>
             <textarea id="${textareaId}" readonly>${content.trim()}</textarea>
             <button class="copy-button" data-target="${textareaId}" data-message="${messageId}"><i class="fas fa-copy"></i> Copy ${title}</button>
             <button class="qr-button" data-content="${content.trim()}"><i class="fas fa-qrcode"></i> Show QR</button>
@@ -452,7 +465,7 @@ const downloadConfig = (fileName, content) => {
     const element = document.createElement('a');
     const file = new Blob([content], { type: 'application/octet-stream' });
     element.href = URL.createObjectURL(file);
-    const finalFileName = fileName.endsWith('.conf') ? fileName : `${fileName}.conf`;
+    const finalFileName = fileName.endsWith('.conf') ? fileName : `${fileName}.conf`; // Ensure .conf extension
     element.download = finalFileName;
     document.body.appendChild(element);
     element.click();
@@ -460,96 +473,23 @@ const downloadConfig = (fileName, content) => {
 };
 
 const scrollToConfig = () => {
-    setTimeout(() => {
-        if (wireGuardConfig.firstChild || v2rayConfig.firstChild) {
-            wireGuardConfig.scrollIntoView({ behavior: 'smooth', block: 'start' });
-        }
-    }, 300);
+    wireGuardConfig.scrollIntoView({ behavior: 'smooth', block: 'start' });
 };
 
-document.addEventListener('DOMContentLoaded', () => {
-    fetchIPInfo();
-});
+// Update footer with current year
+document.getElementById('current-year').textContent = new Date().getFullYear();
 
-// IP and Country Detection Logic
-const fetchIPInfo = async () => {
-    const userIP = document.getElementById('user-ip');
-    const userCountry = document.getElementById('user-country');
+// Fetch and display IP info
+fetch('https://ipapi.co/json/')
+    .then(response => response.json())
+    .then(data => {
+        document.getElementById('user-ip').textContent = data.ip || 'Unknown';
+        document.getElementById('user-country').textContent = data.country_name || 'Unknown';
+    })
+    .catch(() => {
+        document.getElementById('user-ip').textContent = 'Error';
+        document.getElementById('user-country').textContent = 'Error';
+    });
 
-    const updateUI = (ip, country) => {
-        userIP.textContent = ip;
-        userCountry.textContent = country;
-    };
-
-    const isPrivateIP = (ip) => {
-        return (
-            ip.startsWith('192.168.') ||
-            ip.startsWith('10.') ||
-            (ip.startsWith('172.') && parseInt(ip.split('.')[1]) >= 16 && parseInt(ip.split('.')[1]) <= 31) ||
-            ip === '127.0.0.1' || ip.startsWith('0.')
-        );
-    };
-
-    const apis = [
-        'http://ip-api.com/json/?fields=status,query,country',
-        'https://ipapi.co/json/',
-        'https://freegeoip.app/json/',
-        'https://geolocation-db.com/json/',
-        'https://api.ipify.org?format=json'
-    ];
-
-    let ip = null;
-    let country = null;
-
-    for (const api of apis) {
-        try {
-            console.log(`Fetching IP info from: ${api}`);
-            const response = await fetch(api, { mode: 'cors' });
-            if (!response.ok) throw new Error(`HTTP error! Status: ${response.status}`);
-
-            const data = await response.json();
-            console.log(`Response from ${api}:`, data);
-
-            if (api.includes('ip-api.com')) {
-                if (data.status === 'success') {
-                    ip = data.query || ip;
-                    country = data.country || country;
-                }
-            } else if (api.includes('ipapi.co')) {
-                ip = data.ip || ip;
-                country = data.country_name || country;
-            } else if (api.includes('freegeoip.app')) {
-                ip = data.ip || ip;
-                country = data.country_name || country;
-            } else if (api.includes('geolocation-db.com')) {
-                ip = data.IPv4 || ip;
-                country = data.country_name || country;
-            } else if (api.includes('ipify.org')) {
-                ip = data.ip || ip;
-                country = country || 'Unknown';
-            }
-
-            if (ip && isPrivateIP(ip)) {
-                console.log(`Detected private IP: ${ip}. Continuing to find public IP.`);
-                ip = null;
-                country = null;
-            }
-
-            if (ip && country && country !== 'Unknown' && !isPrivateIP(ip)) {
-                updateUI(ip, country);
-                console.log(`Success: IP=${ip}, Country=${country} from ${api}`);
-                return;
-            }
-        } catch (error) {
-            console.error(`Error fetching from ${api}:`, error);
-        }
-    }
-
-    if (ip && !isPrivateIP(ip)) {
-        updateUI(ip, country || 'Unknown');
-        console.log(`Partial success: IP=${ip}, Country=${country || 'Unknown'}`);
-    } else {
-        updateUI('Unknown', 'Unknown');
-        console.warn('Failed to detect a public IP or country. Possible local network issue.');
-    }
-};
+// Initial load of IP lists
+loadIPLists();
