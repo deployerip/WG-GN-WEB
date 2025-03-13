@@ -12,6 +12,25 @@
         <div class="demo-badge">Demo - Work in Progress</div>
         <header>
             <h1><i class="fas fa-shield-alt"></i> Config Generator</h1>
+            <div class="intro-section">
+                <h2>Welcome to Your VPN & DNS Config Generator</h2>
+                <p>Create custom WireGuard and V2Ray configurations effortlessly. Whether you need a secure VPN or fast DNS setup, our tool simplifies the process with just a few clicks. Perfect for privacy enthusiasts, developers, and anyone seeking reliable internet solutions.</p>
+                <div class="intro-features">
+                    <div class="feature-item">
+                        <i class="fas fa-lock"></i>
+                        <span>Secure & Private</span>
+                    </div>
+                    <div class="feature-item">
+                        <i class="fas fa-bolt"></i>
+                        <span>Fast & Easy</span>
+                    </div>
+                    <div class="feature-item">
+                        <i class="fas fa-cogs"></i>
+                        <span>Fully Customizable</span>
+                    </div>
+                </div>
+                <button class="cta-btn"><i class="fas fa-play"></i> Get Started</button>
+            </div>
             <div id="wireguard-purpose">
                 <h2><i class="fas fa-cog"></i> Choose Your Purpose</h2>
                 <div class="peer-selection">
@@ -28,6 +47,17 @@
                         <span>DNS</span>
                     </button>
                 </div>
+            </div>
+            <div class="how-to-use">
+                <h2><i class="fas fa-question-circle"></i> How to Use This Tool</h2>
+                <ol>
+                    <li><strong>Choose Your Purpose:</strong> Select "VPN" for a secure connection or "DNS" for optimized name resolution.</li>
+                    <li><strong>Customize Your Config:</strong> Pick your options (e.g., IPv4/IPv6 peers or DNS provider).</li>
+                    <li><strong>Generate Config:</strong> Click "Generate Config" to create your WireGuard or V2Ray setup.</li>
+                    <li><strong>Download or Copy:</strong> Save the config file or copy it to your clipboard for use in your client.</li>
+                    <li><strong>Scan QR (Optional):</strong> For V2Ray, use the QR code to quickly import the config on mobile devices.</li>
+                </ol>
+                <p><strong>Tip:</strong> Use the "Back" button to tweak settings or "Home" to start over!</p>
             </div>
             <div id="vpn-options" class="hidden">
                 <button class="back-btn"><i class="fas fa-arrow-left"></i> Back</button>
@@ -101,40 +131,64 @@
                     <button id="opendns-btn" class="choice-btn">
                         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><path d="M57.7 193l9.4 16.4c8.3 14.5 21.9 25.2 38 29.8L163 255.7c17.2 4.9 29 20.6 29 38.5l0 39.9c0 11 6.2 21 16 25.9s16 14.9 16 25.9l0 39c0 15.6 14.9 26.9 29.9 22.6c16.1-4.6 28.6-17.5 32.7-33.8l2.8-11.2c4.2-16.9 15.2-31.4 30.3-40l8.1-4.6c15-8.5 24.2-24.5 24.2-41.7l0-8.3c0-12.7-5.1-24.9-14.1-33.9l-3.9-3.9c-9-9-21.2-14.1-33.9-14.1L257 256c-11.1 0-22.1-2.9-31.8-8.4l-34.5-19.7c-4.3-2.5-7.6-6.5-9.2-11.2c-3.2-9.6 1.1-20 10.2-24.5l5.9-3c6.6-3.3 14.3-3.9 21.3-1.5l23.2 7.7c8.2 2.7 17.2-.4 21.9-7.5c4.7-7 4.2-16.3-1.2-22.8l-13.6-16.3c-10-12-9.9-29.5 .3-41.3l15.7-18.3c8.8-10.3 10.2-25 3.5-36.7l-2.4-4.2c-3.5-.2-6.9-.3-10.4-.3C163.1 48 84.4 108.9 57.7 193zM464 256c0-36.8-9.6-71.4-26.4-101.5L412 164.8c-15.7 6.3-23.8 23.8-18.5 39.8l16.9 50.7c3.5 10.4 12 18.3 22.6 20.9l29.1 7.3c1.2-9 1.8-18.2 1.8-27.5zM0 256a256 256 0 1 1 512 0A256 256 0 1 1 0 256z"/></svg>
                         <span>OpenDNS</span>
-                        <button id="shecan-btn" class="choice-btn">
-                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
-                                <path d="M483.049 159.706c10.855-24.575 21.424-60.438 21.424-87.871 0-72.722-79.641-98.371-209.673-38.577-107.632-7.181-211.221 73.67-237.098 186.457 30.852-34.862 78.271-82.298 121.977-101.158C125.404 166.85 79.128 228.002 43.992 291.725 23.246 329.651 0 390.94 0 436.747c0 98.575 92.854 86.5 180.251 42.006 31.423 15.43 66.559 15.573 101.695 15.573 97.124 0 184.249-54.294 216.814-146.022H377.927c-52.509 88.593-196.819 52.996-196.819-47.436H509.9c6.407-43.581-1.655-95.715-26.851-141.162zM64.559 346.877c17.711 51.15 53.703 95.871 100.266 123.304-88.741 48.94-173.267 29.096-100.266-123.304zm115.977-108.873c2-55.151 50.276-94.871 103.98-94.871 53.418 0 101.981 39.72 103.981 94.871H180.536zm184.536-187.6c21.425-10.287 48.563-22.003 72.558-22.003 31.422 0 54.274 21.717 54.274 53.722 0 20.003-7.427 49.007-14.569 67.867-26.28-42.292-65.986-81.584-112.263-99.586z"/>
-                            </svg>
-                            <span>Shecan</span>
-                        </button>
-                        <button id="403online-btn" class="choice-btn">
-                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512">
-                                <path d="M0 93.7l183.6-25.3v177.4H0V93.7zm0 324.6l183.6 25.3V268.4H0v149.9zm203.8 28L448 480V268.4H203.8v177.9zm0-380.6v180.1H448V32L203.8 65.7z"/>
-                            </svg>
-                            <span>403 Online</span>
-                        </button>
-                        <button id="electro-btn" class="choice-btn">
-                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 512">
-                                <path d="M192 64C86 64 0 150 0 256S86 448 192 448l256 0c106 0 192-86 192-192s-86-192-192-192L192 64zM496 168a40 40 0 1 1 0 80 40 40 0 1 1 0-80zM392 304a40 40 0 1 1 80 0 40 40 0 1 1 -80 0zM168 200c0-13.3 10.7-24 24-24s24 10.7 24 24l0 32 32 0c13.3 0 24 10.7 24 24s-10.7 24-24 24l-32 0 0 32c0 13.3-10.7 24-24 24s-24-10.7-24-24l0-32-32 0c-13.3 0-24-10.7-24-24s10.7-24 24-24l32 0 0-32z"/>
-                            </svg>
-                            <span>Electro</span>
-                        </button>
+                    </button>
+                    <button id="shecan-btn" class="choice-btn">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+                            <path d="M483.049 159.706c10.855-24.575 21.424-60.438 21.424-87.871 0-72.722-79.641-98.371-209.673-38.577-107.632-7.181-211.221 73.67-237.098 186.457 30.852-34.862 78.271-82.298 121.977-101.158C125.404 166.85 79.128 228.002 43.992 291.725 23.246 329.651 0 390.94 0 436.747c0 98.575 92.854 86.5 180.251 42.006 31.423 15.43 66.559 15.573 101.695 15.573 97.124 0 184.249-54.294 216.814-146.022H377.927c-52.509 88.593-196.819 52.996-196.819-47.436H509.9c6.407-43.581-1.655-95.715-26.851-141.162zM64.559 346.877c17.711 51.15 53.703 95.871 100.266 123.304-88.741 48.94-173.267 29.096-100.266-123.304zm115.977-108.873c2-55.151 50.276-94.871 103.98-94.871 53.418 0 101.981 39.72 103.981 94.871H180.536zm184.536-187.6c21.425-10.287 48.563-22.003 72.558-22.003 31.422 0 54.274 21.717 54.274 53.722 0 20.003-7.427 49.007-14.569 67.867-26.28-42.292-65.986-81.584-112.263-99.586z"/>
+                        </svg>
+                        <span>Shecan</span>
+                    </button>
+                    <button id="403online-btn" class="choice-btn">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512">
+                            <path d="M0 93.7l183.6-25.3v177.4H0V93.7zm0 324.6l183.6 25.3V268.4H0v149.9zm203.8 28L448 480V268.4H203.8v177.9zm0-380.6v180.1H448V32L203.8 65.7z"/>
+                        </svg>
+                        <span>403 Online</span>
+                    </button>
+                    <button id="electro-btn" class="choice-btn">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 512">
+                            <path d="M192 64C86 64 0 150 0 256S86 448 192 448l256 0c106 0 192-86 192-192s-86-192-192-192L192 64zM496 168a40 40 0 1 1 0 80 40 40 0 1 1 0-80zM392 304a40 40 0 1 1 80 0 40 40 0 1 1 -80 0zM168 200c0-13.3 10.7-24 24-24s24 10.7 24 24l0 32 32 0c13.3 0 24 10.7 24 24s-10.7 24-24 24l-32 0 0 32c0 13.3-10.7 24-24 24s-24-10.7-24-24l0-32-32 0c-13.3 0-24-10.7-24-24s10.7-24 24-24l32 0 0-32z"/>
+                        </svg>
+                        <span>Electro</span>
                     </button>
                 </div>
             </div>
         </header>
         <section class="wire-guard-config config-container"></section>
         <section class="v2ray-config config-container"></section>
+        <section class="about-section">
+            <h2><i class="fas fa-info-circle"></i> About WireGuard & V2Ray</h2>
+            <div class="about-content">
+                <div class="about-item">
+                    <h3>WireGuard</h3>
+                    <p>A modern, lightweight VPN protocol designed for speed and security. It’s easy to set up and works across all devices.</p>
+                </div>
+                <div class="about-item">
+                    <h3>V2Ray</h3>
+                    <p>A powerful proxy tool supporting multiple protocols. Ideal for bypassing restrictions and enhancing privacy.</p>
+                </div>
+            </div>
+        </section>
+        <section class="troubleshooting">
+            <h2><i class="fas fa-tools"></i> Troubleshooting</h2>
+            <ul>
+                <li><strong>Config Not Working?</strong> Double-check your client settings and ensure the endpoint is reachable.</li>
+                <li><strong>QR Code Issues?</strong> Copy the V2Ray URL manually if scanning fails.</li>
+                <li><strong>Slow Connection?</strong> Try reducing the MTU or switching peers.</li>
+            </ul>
+        </section>
         <button class="home-btn" style="display: none"><i class="fas fa-home"></i> Home</button>
     </main>
     <footer>
-        <div>
+        <div class="footer-links">
             <a href="https://github.com/deployerip" target="_blank" rel="noopener noreferrer"><i class="fab fa-github"></i> GitHub</a>
             <a href="mailto:deployerip@duck.com"><i class="fas fa-envelope"></i> Email</a>
             <a href="https://wireguard.com" target="_blank" rel="noopener noreferrer"><i class="fas fa-shield-alt"></i> WireGuard</a>
             <a href="https://www.v2ray.com" target="_blank" rel="noopener noreferrer"><i class="fas fa-rocket"></i> V2Ray</a>
         </div>
         <div class="ip-info">Your IP: <span id="user-ip">Loading...</span> | Country: <span id="user-country">Loading...</span></div>
+        <div class="footer-note">
+            <p>Built with <i class="fas fa-heart" style="color: #ff6b6b;"></i> by DeployerIP | <span id="current-year"></span></p>
+        </div>
     </footer>
     <div class="spinner"></div>
     <div class="qr-popup" id="qr-popup">
