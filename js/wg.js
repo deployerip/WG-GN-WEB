@@ -12,6 +12,9 @@ const online403Btn = document.getElementById('403online-btn');
 const electroBtn = document.getElementById('electro-btn');
 const cloudflareBtn = document.getElementById('cloudflare-btn');
 const adguardBtn = document.getElementById('adguard-btn');
+const googleBtn = document.getElementById('google-btn');
+const quad9Btn = document.getElementById('quad9-btn');
+const opendnsBtn = document.getElementById('opendns-btn');
 const getConfigBtn = document.querySelector('.get-btn');
 const homeBtn = document.querySelector('.home-btn');
 const wireGuardConfig = document.querySelector('.wire-guard-config');
@@ -21,28 +24,13 @@ const ipv6CountInput = document.getElementById('ipv6-count');
 const backButtons = document.querySelectorAll('.back-btn');
 const vpnWarning = document.getElementById('vpn-warning');
 const ipv6Warning = document.getElementById('ipv6-warning');
+const qrPopup = document.getElementById('qr-popup');
+const qrCloseBtn = document.querySelector('.qr-close-btn');
 
 let ipv4List = [];
 let ipv6List = [];
 let selectedDNS = null;
 let selectedEndpointType = null;
-
-// Tooltip content for each button
-const tooltipContent = {
-    'vpn-btn': 'Generates a VPN configuration for secure browsing. Click to select VPN options.',
-    'dns-btn': 'Sets up a DNS-only WireGuard config. Click to choose a DNS provider.',
-    'custom-peers-btn': 'Allows custom peer configuration. Enter the number of IPv4/IPv6 peers you need.',
-    'ipv4-btn': 'Creates a VPN config with an IPv4 peer. Click for a quick IPv4 setup.',
-    'ipv6-btn': 'Creates a VPN config with an IPv6 peer. Click for a quick IPv6 setup (mobile recommended).',
-    'shecan-btn': 'Uses Shecan DNS servers. Click to apply Shecan DNS to your config.',
-    '403online-btn': 'Uses 403 Online DNS servers. Click to apply 403 Online DNS.',
-    'electro-btn': 'Uses Electro DNS servers. Click to apply Electro DNS.',
-    'cloudflare-btn': 'Uses Cloudflare DNS servers. Click to apply Cloudflare DNS.',
-    'adguard-btn': 'Uses AdGuard DNS servers. Click to apply AdGuard DNS.',
-    'get-btn': 'Generates your custom config. Enter peer counts and click to create.',
-    'home-btn': 'Returns to the main menu. Click to reset and start over.',
-    'back-btn': 'Goes back to the previous menu. Click to navigate back.'
-};
 
 const loadIPLists = async () => {
     const [ipv4Response, ipv6Response] = await Promise.all([
@@ -55,9 +43,7 @@ const loadIPLists = async () => {
 
 const showWarning = (warningElement) => {
     warningElement.style.display = 'block';
-    setTimeout(() => {
-        warningElement.style.display = 'none';
-    }, 4000);
+    setTimeout(() => warningElement.style.display = 'none', 4000);
 };
 
 vpnBtn.addEventListener('click', () => {
@@ -115,6 +101,24 @@ cloudflareBtn.addEventListener('click', () => {
 
 adguardBtn.addEventListener('click', () => {
     selectedDNS = 'adguard';
+    dnsOptions.classList.add('hidden');
+    generateDNSConfig();
+});
+
+googleBtn.addEventListener('click', () => {
+    selectedDNS = 'google';
+    dnsOptions.classList.add('hidden');
+    generateDNSConfig();
+});
+
+quad9Btn.addEventListener('click', () => {
+    selectedDNS = 'quad9';
+    dnsOptions.classList.add('hidden');
+    generateDNSConfig();
+});
+
+opendnsBtn.addEventListener('click', () => {
+    selectedDNS = 'opendns';
     dnsOptions.classList.add('hidden');
     generateDNSConfig();
 });
@@ -178,6 +182,7 @@ async function generatePersonalConfig(peerCount, ipv4Count, ipv6Count) {
             homeBtn.style.display = 'flex';
             addCopyListeners();
             addDownloadListener();
+            addQRListener(v2rayText);
         }
     } catch (error) {
         console.error('Error processing configuration:', error);
@@ -221,6 +226,18 @@ async function generateDNSConfig() {
                 case 'adguard':
                     dnsServers = '94.140.14.14, 94.140.15.15';
                     title = 'WireGuard Format (AdGuard DNS)';
+                    break;
+                case 'google':
+                    dnsServers = '8.8.8.8, 8.8.4.4';
+                    title = 'WireGuard Format (Google DNS)';
+                    break;
+                case 'quad9':
+                    dnsServers = '9.9.9.9, 149.112.112.112';
+                    title = 'WireGuard Format (Quad9 DNS)';
+                    break;
+                case 'opendns':
+                    dnsServers = '208.67.222.222, 208.67.220.220';
+                    title = 'WireGuard Format (OpenDNS)';
                     break;
             }
             const configText = `[Interface]
@@ -338,21 +355,11 @@ const updateDOMWithQR = (container, title, textareaId, content, messageId, qrId)
     } else {
         container.innerHTML = `
             <h2><i class="fas fa-code"></i> ${title}</h2>
-            <div class="qr-code" id="${qrId}"></div>
             <textarea id="${textareaId}" readonly>${content.trim()}</textarea>
             <button class="copy-button" data-target="${textareaId}" data-message="${messageId}"><i class="fas fa-copy"></i> Copy ${title}</button>
+            <button class="qr-button" data-content="${content.trim()}"><i class="fas fa-qrcode"></i> Show QR</button>
             <p id="${messageId}" aria-live="polite"></p>
         `;
-        if (!content.includes('not supported')) {
-            new QRCode(document.getElementById(qrId), {
-                text: content.trim(),
-                width: 256,
-                height: 256,
-                colorDark: "#000000",
-                colorLight: "#ffffff",
-                correctLevel: QRCode.CorrectLevel.H
-            });
-        }
     }
 };
 
@@ -376,6 +383,32 @@ const addDownloadListener = () => {
         });
     }
 };
+
+const addQRListener = (content) => {
+    document.querySelectorAll('.qr-button').forEach(btn => {
+        btn.addEventListener('click', () => {
+            const qrContent = btn.getAttribute('data-content');
+            if (!qrContent.includes('not supported')) {
+                document.getElementById('v2rayQR').innerHTML = '';
+                new QRCode(document.getElementById('v2rayQR'), {
+                    text: qrContent,
+                    width: 300,
+                    height: 300,
+                    colorDark: "#000000",
+                    colorLight: "#ffffff",
+                    correctLevel: QRCode.CorrectLevel.H
+                });
+                qrPopup.style.display = 'block';
+            } else {
+                showPopup('No QR code available for this configuration', 'error');
+            }
+        });
+    });
+};
+
+qrCloseBtn.addEventListener('click', () => {
+    qrPopup.style.display = 'none';
+});
 
 const showSpinner = () => {
     document.querySelector('.spinner').style.display = 'flex';
@@ -408,9 +441,7 @@ const showCopyMessage = (messageId, message, type = 'success') => {
         messageElement.textContent = message;
         messageElement.style.color = type === 'success' ? '#00b894' : '#ff7675';
         messageElement.style.fontWeight = '500';
-        setTimeout(() => {
-            messageElement.textContent = '';
-        }, 2000);
+        setTimeout(() => messageElement.textContent = '', 2000);
     }
 };
 
@@ -422,29 +453,7 @@ const showPopup = (message, type = 'success') => {
     document.body.appendChild(popup);
 
     const closeBtn = popup.querySelector('.close-btn');
-    closeBtn.addEventListener('click', () => {
-        popup.remove();
-    });
-
-    let startX = 0;
-    let currentX = 0;
-    popup.addEventListener('touchstart', (e) => {
-        startX = e.touches[0].clientX;
-    });
-    popup.addEventListener('touchmove', (e) => {
-        currentX = e.touches[0].clientX - startX;
-        popup.classList.add('swiping');
-        popup.style.transform = `translateX(${currentX}px)`;
-    });
-    popup.addEventListener('touchend', () => {
-        popup.classList.remove('swiping');
-        if (Math.abs(currentX) > 50) {
-            popup.style.transform = `translateX(${currentX > 0 ? '100%' : '-100%'})`;
-            setTimeout(() => popup.remove(), 300);
-        } else {
-            popup.style.transform = 'translateX(-50%)';
-        }
-    });
+    closeBtn.addEventListener('click', () => popup.remove());
 
     setTimeout(() => {
         if (document.body.contains(popup)) {
@@ -480,72 +489,12 @@ const scrollToConfig = () => {
     }, 300);
 };
 
-// Tooltip Functionality
-const createTooltip = (button) => {
-    const tooltip = document.createElement('div');
-    tooltip.classList.add('tooltip');
-    button.appendChild(tooltip); // Append as child of the button
-    return tooltip;
-};
+document.addEventListener('DOMContentLoaded', () => {
+    fetchIPInfo();
+    addTooltipListeners();
+});
 
-const showTooltip = (tooltip, text) => {
-    tooltip.textContent = text;
-    tooltip.classList.add('visible');
-};
-
-const hideTooltip = (tooltip) => {
-    tooltip.classList.remove('visible');
-};
-
-const addTooltipListeners = () => {
-    const buttons = document.querySelectorAll('button[id], .back-btn');
-
-    buttons.forEach(button => {
-        const buttonId = button.id || (button.classList.contains('back-btn') ? 'back-btn' : null);
-        if (!buttonId || !tooltipContent[buttonId]) return;
-
-        const tooltip = createTooltip(button);
-        let hoverTimer;
-        let pressTimer;
-
-        // Hover for desktop (1-second delay)
-        button.addEventListener('mouseenter', () => {
-            hoverTimer = setTimeout(() => {
-                showTooltip(tooltip, tooltipContent[buttonId]);
-            }, 1000);
-        });
-
-        button.addEventListener('mouseleave', () => {
-            clearTimeout(hoverTimer);
-            hideTooltip(tooltip);
-        });
-
-        // Touch for mobile (1-second delay, always allow click)
-        button.addEventListener('touchstart', (e) => {
-            pressTimer = setTimeout(() => {
-                showTooltip(tooltip, tooltipContent[buttonId]);
-                console.log(`Long press detected on ${buttonId}`); // Debug
-            }, 1000);
-        });
-
-        button.addEventListener('touchend', (e) => {
-            clearTimeout(pressTimer);
-            hideTooltip(tooltip);
-        });
-
-        button.addEventListener('touchmove', () => {
-            clearTimeout(pressTimer);
-            hideTooltip(tooltip);
-        });
-
-        button.addEventListener('touchcancel', () => {
-            clearTimeout(pressTimer);
-            hideTooltip(tooltip);
-        });
-    });
-};
-
-// IP and Country Detection Logic
+// IP and Country Detection Logic (unchanged)
 const fetchIPInfo = async () => {
     const userIP = document.getElementById('user-ip');
     const userCountry = document.getElementById('user-country');
@@ -627,8 +576,3 @@ const fetchIPInfo = async () => {
         console.warn('Failed to detect a public IP or country. Possible local network issue.');
     }
 };
-
-document.addEventListener('DOMContentLoaded', () => {
-    fetchIPInfo();
-    addTooltipListeners();
-});
