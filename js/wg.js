@@ -24,7 +24,7 @@ const ipv6CountInput = document.getElementById('ipv6-count');
 const backButtons = document.querySelectorAll('.back-btn');
 const qrPopup = document.getElementById('qr-popup');
 const qrCloseBtn = document.querySelector('.qr-close-btn');
-const ctaBtn = document.querySelector('.cta-btn');
+const startConfigBtn = document.getElementById('start-config-btn');
 
 let ipv4List = [];
 let ipv6List = [];
@@ -39,6 +39,13 @@ const loadIPLists = async () => {
     ipv4List = await ipv4Response.json();
     ipv6List = await ipv6Response.json();
 };
+
+// Show configuration options when "Start Configuring" is clicked
+startConfigBtn.addEventListener('click', () => {
+    startConfigBtn.classList.add('hidden');
+    wireguardPurpose.classList.remove('hidden');
+    wireguardPurpose.scrollIntoView({ behavior: 'smooth', block: 'start' });
+});
 
 vpnBtn.addEventListener('click', () => {
     wireguardPurpose.classList.add('hidden');
@@ -145,10 +152,6 @@ homeBtn.addEventListener('click', () => {
     v2rayConfig.innerHTML = '';
     homeBtn.style.display = 'none';
     wireguardPurpose.classList.remove('hidden');
-});
-
-ctaBtn.addEventListener('click', () => {
-    wireguardPurpose.scrollIntoView({ behavior: 'smooth', block: 'start' });
 });
 
 async function generatePersonalConfig(peerCount, ipv4Count, ipv6Count) {
@@ -465,7 +468,7 @@ const downloadConfig = (fileName, content) => {
     const element = document.createElement('a');
     const file = new Blob([content], { type: 'application/octet-stream' });
     element.href = URL.createObjectURL(file);
-    const finalFileName = fileName.endsWith('.conf') ? fileName : `${fileName}.conf`; // Ensure .conf extension
+    const finalFileName = fileName.endsWith('.conf') ? fileName : `${fileName}.conf`;
     element.download = finalFileName;
     document.body.appendChild(element);
     element.click();
