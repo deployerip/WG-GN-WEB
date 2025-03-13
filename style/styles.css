@@ -543,7 +543,7 @@ footer .ip-info {
 
 .tooltip {
   position: absolute;
-    top: -40px; /* Position above the button */
+    top: -40px;
     left: 50%;
     transform: translateX(-50%);
     background-color: #333;
@@ -552,7 +552,7 @@ footer .ip-info {
     border-radius: 4px;
     font-size: 14px;
     z-index: 1000;
-    max-width: 300px; /* Increased from 250px */
+    max-width: 300px;
     white-space: normal;
     pointer-events: none;
     opacity: 0;
@@ -563,9 +563,8 @@ footer .ip-info {
   opacity: 1;
 }
 
-/* Mobile-specific adjustments for info icon */
 @media (max-width: 767px) {
   .choice-btn .info-icon:hover::after {
-    display: none; /* Hide hover effect on mobile */
+    display: none;
   }
 }
