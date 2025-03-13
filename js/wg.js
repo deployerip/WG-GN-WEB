@@ -628,7 +628,6 @@ const fetchIPInfo = async () => {
     }
 };
 
-// Execute IP detection and tooltip setup on page load
 document.addEventListener('DOMContentLoaded', () => {
     fetchIPInfo();
     addTooltipListeners();
