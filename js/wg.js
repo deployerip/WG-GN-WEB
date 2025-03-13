@@ -22,8 +22,6 @@ const v2rayConfig = document.querySelector('.v2ray-config');
 const ipv4CountInput = document.getElementById('ipv4-count');
 const ipv6CountInput = document.getElementById('ipv6-count');
 const backButtons = document.querySelectorAll('.back-btn');
-const vpnWarning = document.getElementById('vpn-warning');
-const ipv6Warning = document.getElementById('ipv6-warning');
 const qrPopup = document.getElementById('qr-popup');
 const qrCloseBtn = document.querySelector('.qr-close-btn');
 
@@ -41,15 +39,9 @@ const loadIPLists = async () => {
     ipv6List = await ipv6Response.json();
 };
 
-const showWarning = (warningElement) => {
-    warningElement.style.display = 'block';
-    setTimeout(() => warningElement.style.display = 'none', 4000);
-};
-
 vpnBtn.addEventListener('click', () => {
     wireguardPurpose.classList.add('hidden');
     vpnOptions.classList.remove('hidden');
-    showWarning(vpnWarning);
 });
 
 dnsBtn.addEventListener('click', () => {
@@ -71,7 +63,6 @@ ipv4Btn.addEventListener('click', () => {
 ipv6Btn.addEventListener('click', () => {
     selectedEndpointType = 'ipv6';
     vpnOptions.classList.add('hidden');
-    showWarning(ipv6Warning);
     generatePersonalConfig(1, 0, 1);
 });
 
@@ -136,8 +127,6 @@ backButtons.forEach(btn => {
         wireGuardConfig.innerHTML = '';
         v2rayConfig.innerHTML = '';
         homeBtn.style.display = 'none';
-        vpnWarning.style.display = 'none';
-        ipv6Warning.style.display = 'none';
     });
 });
 
@@ -155,8 +144,6 @@ homeBtn.addEventListener('click', () => {
     v2rayConfig.innerHTML = '';
     homeBtn.style.display = 'none';
     wireguardPurpose.classList.remove('hidden');
-    vpnWarning.style.display = 'none';
-    ipv6Warning.style.display = 'none';
 });
 
 async function generatePersonalConfig(peerCount, ipv4Count, ipv6Count) {
@@ -186,7 +173,6 @@ async function generatePersonalConfig(peerCount, ipv4Count, ipv6Count) {
         }
     } catch (error) {
         console.error('Error processing configuration:', error);
-        showPopup('Failed to generate config. Please try again.', 'error');
     } finally {
         hideSpinner();
         getConfigBtn.disabled = false;
@@ -253,7 +239,6 @@ MTU = 1280`;
         }
     } catch (error) {
         console.error('Error processing configuration:', error);
-        showPopup('Failed to generate config. Please try again.', 'error');
     } finally {
         hideSpinner();
         scrollToConfig();
@@ -374,10 +359,7 @@ const addDownloadListener = () => {
     if (downloadBtn) {
         downloadBtn.addEventListener('click', () => {
             const content = document.querySelector('#wireguardBox')?.value || "No configuration available";
-            if (content === "No configuration available") {
-                showPopup('No configuration to download', 'error');
-                return;
-            }
+            if (content === "No configuration available") return;
             downloadConfig(selectedDNS ? 'wireguard.conf' : 'config', content);
             showPopup('Configuration file downloaded');
         });
@@ -399,8 +381,6 @@ const addQRListener = (content) => {
                     correctLevel: QRCode.CorrectLevel.H
                 });
                 qrPopup.style.display = 'block';
-            } else {
-                showPopup('No QR code available for this configuration', 'error');
             }
         });
     });
@@ -430,7 +410,6 @@ const handleCopyButtonClick = async function(e) {
         showCopyMessage(messageId, 'Copied!', 'success');
     } catch (error) {
         console.error('Copy failed:', error);
-        showPopup('Failed to copy, please try again.', 'error');
         showCopyMessage(messageId, 'Failed to copy', 'error');
     }
 };
@@ -445,10 +424,9 @@ const showCopyMessage = (messageId, message, type = 'success') => {
     }
 };
 
-const showPopup = (message, type = 'success') => {
+const showPopup = (message) => {
     const popup = document.createElement('div');
     popup.classList.add('popup-message');
-    if (type === 'error') popup.classList.add('error');
     popup.innerHTML = `${message} <button class="close-btn"><i class="fas fa-times"></i></button>`;
     document.body.appendChild(popup);
 
@@ -491,10 +469,9 @@ const scrollToConfig = () => {
 
 document.addEventListener('DOMContentLoaded', () => {
     fetchIPInfo();
-    addTooltipListeners();
 });
 
-// IP and Country Detection Logic (unchanged)
+// IP and Country Detection Logic
 const fetchIPInfo = async () => {
     const userIP = document.getElementById('user-ip');
     const userCountry = document.getElementById('user-country');
