@@ -266,33 +266,6 @@ button:hover:not(:disabled) {
     box-shadow: 0 0 12px rgba(42, 82, 152, 0.6);
 }
 
-.warning-panel {
-    position: fixed;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    background: #ff7675;
-    color: #fff;
-    padding: 25px;
-    border-radius: 12px;
-    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.3);
-    z-index: 2000;
-    max-width: 450px;
-    text-align: center;
-    animation: slideIn 0.5s ease-out, slideOut 0.5s ease-in 9.5s forwards;
-    display: none;
-}
-
-@keyframes slideIn {
-    from { transform: translate(-50%, -60%); opacity: 0; }
-    to { transform: translate(-50%, -50%); opacity: 1; }
-}
-
-@keyframes slideOut {
-    from { transform: translate(-50%, -50%); opacity: 1; }
-    to { transform: translate(-50%, -60%); opacity: 0; }
-}
-
 .hidden {
     display: none;
 }
