@@ -29,9 +29,9 @@
                         <span>Fully Customizable</span>
                     </div>
                 </div>
-                <button class="cta-btn"><i class="fas fa-play"></i> Get Started</button>
+                <button class="cta-btn" id="start-config-btn"><i class="fas fa-play"></i> Start Configuring</button>
             </div>
-            <div id="wireguard-purpose">
+            <div id="wireguard-purpose" class="hidden">
                 <h2><i class="fas fa-cog"></i> Choose Your Purpose</h2>
                 <div class="peer-selection">
                     <button id="vpn-btn" class="choice-btn">
@@ -47,17 +47,6 @@
                         <span>DNS</span>
                     </button>
                 </div>
-            </div>
-            <div class="how-to-use">
-                <h2><i class="fas fa-question-circle"></i> How to Use This Tool</h2>
-                <ol>
-                    <li><strong>Choose Your Purpose:</strong> Select "VPN" for a secure connection or "DNS" for optimized name resolution.</li>
-                    <li><strong>Customize Your Config:</strong> Pick your options (e.g., IPv4/IPv6 peers or DNS provider).</li>
-                    <li><strong>Generate Config:</strong> Click "Generate Config" to create your WireGuard or V2Ray setup.</li>
-                    <li><strong>Download or Copy:</strong> Save the config file or copy it to your clipboard for use in your client.</li>
-                    <li><strong>Scan QR (Optional):</strong> For V2Ray, use the QR code to quickly import the config on mobile devices.</li>
-                </ol>
-                <p><strong>Tip:</strong> Use the "Back" button to tweak settings or "Home" to start over!</p>
             </div>
             <div id="vpn-options" class="hidden">
                 <button class="back-btn"><i class="fas fa-arrow-left"></i> Back</button>
@@ -140,7 +129,7 @@
                     </button>
                     <button id="403online-btn" class="choice-btn">
                         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512">
-                            <path d="M0 93.7l183.6-25.3v177.4H0V93.7zm0 324.6l183.6 25.3V268.4H0v149.9zm203.8 28L448 480V268.4H203.8v177.9zm0-380.6v180.1H448V32L203.8 65.7z"/>
+                            <path d="M0 93.7l183.6-25.3v177.4H0V93.7zm0 324.6l183.6 25.3V268.4H0v149.9zm203.8 28L448 480V268.4H203.8v177.9zm0-380.6v180.1    H448V32L203.8 65.7z"/>
                         </svg>
                         <span>403 Online</span>
                     </button>
