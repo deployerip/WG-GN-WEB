@@ -322,14 +322,13 @@ button:hover:not(:disabled) {
   right: -10px;
   background: none;
   border: none;
-  color: #ff6b6b; /* Red color for visibility */
-  font-size: 24px; /* Larger icon */
+  color: #ff6b6b;
+  font-size: 24px;
   cursor: pointer;
-  transition: color 0.3s ease;
 }
 
 .qr-close-btn:hover {
-  color: #ff8787; /* Lighter red on hover */
+  color: #ff8787;
 }
 
 .popup-message {
@@ -420,7 +419,6 @@ footer .ip-info {
   flex-wrap: wrap;
 }
 
-/* New DNS Popup Styles */
 .dns-list {
     margin: 10px 0;
     display: flex;
@@ -442,14 +440,13 @@ footer .ip-info {
 .remove-dns {
     background: none;
     border: none;
-    color: #ff6b6b; /* Red color for visibility */
-    font-size: 18px; /* Slightly larger icon */
+    color: #ff6b6b;
+    font-size: 18px;
     cursor: pointer;
-    transition: color 0.3s ease;
 }
 
 .remove-dns:hover {
-    color: #ff8787; /* Lighter red on hover */
+    color: #ff8787;
 }
 
 .add-dns-btn {
@@ -487,14 +484,13 @@ footer .ip-info {
     right: -10px;
     background: none;
     border: none;
-    color: #ff6b6b; /* Red color for visibility */
-    font-size: 24px; /* Larger icon */
+    color: #ff6b6b;
+    font-size: 24px;
     cursor: pointer;
-    transition: color 0.3s ease;
 }
 
 .dns-close-btn:hover {
-    color: #ff8787; /* Lighter red on hover */
+    color: #ff8787;
 }
 
 .dns-popup h3 {
