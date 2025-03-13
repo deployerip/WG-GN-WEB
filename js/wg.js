@@ -36,6 +36,7 @@ let ipv6List = [];
 let selectedDNS = null;
 let selectedEndpointType = null;
 let selectedDNSServers = ['1.1.1.1', '1.0.0.1', '2606:4700:4700::1111', '2606:4700:4700::1001']; // Default DNS
+let editingDNS = null; // Track DNS being edited
 
 const loadIPLists = async () => {
     const [ipv4Response, ipv6Response] = await Promise.all([
@@ -154,20 +155,33 @@ homeBtn.addEventListener('click', () => {
 });
 
 addDnsBtn.addEventListener('click', () => {
+    editingDNS = null; // Reset editing state
+    manualDnsInput.value = '';
     dnsPopup.classList.remove('hidden');
 });
 
 dnsCloseBtn.addEventListener('click', () => {
     dnsPopup.classList.add('hidden');
     manualDnsInput.value = '';
+    editingDNS = null; // Reset editing state
 });
 
 addManualDnsBtn.addEventListener('click', () => {
     const dns = manualDnsInput.value.trim();
     if (dns && isValidIP(dns)) {
-        addDnsToList(dns);
+        if (editingDNS) {
+            // Replace the old DNS with the new one
+            const index = selectedDNSServers.indexOf(editingDNS);
+            if (index !== -1) {
+                selectedDNSServers[index] = dns;
+            }
+            editingDNS = null;
+        } else {
+            addDnsToList(dns);
+        }
         dnsPopup.classList.add('hidden');
         manualDnsInput.value = '';
+        updateDnsList();
     } else {
         showPopup('Please enter a valid IP address', 'error');
     }
@@ -176,8 +190,19 @@ addManualDnsBtn.addEventListener('click', () => {
 document.querySelectorAll('.dns-choice').forEach(btn => {
     btn.addEventListener('click', () => {
         const dns = btn.getAttribute('data-dns').split(', ');
-        dns.forEach(ip => addDnsToList(ip));
+        dns.forEach(ip => {
+            if (editingDNS) {
+                const index = selectedDNSServers.indexOf(editingDNS);
+                if (index !== -1) {
+                    selectedDNSServers[index] = ip;
+                }
+                editingDNS = null;
+            } else {
+                addDnsToList(ip);
+            }
+        });
         dnsPopup.classList.add('hidden');
+        updateDnsList();
     });
 });
 
@@ -525,10 +550,17 @@ function updateDnsList() {
             <button class="remove-dns" data-dns="${dns}"><i class="fas fa-times"></i></button>
         `;
         dnsList.appendChild(dnsItem);
-    });
-    document.querySelectorAll('.remove-dns').forEach(btn => {
-        btn.addEventListener('click', () => {
-            removeDnsFromList(btn.getAttribute('data-dns'));
+
+        // Add click event to edit DNS
+        dnsItem.querySelector('span').addEventListener('click', () => {
+            editingDNS = dns;
+            manualDnsInput.value = dns;
+            dnsPopup.classList.remove('hidden');
+        });
+
+        // Add remove event
+        dnsItem.querySelector('.remove-dns').addEventListener('click', () => {
+            removeDnsFromList(dns);
         });
     });
 }
