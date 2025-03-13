@@ -24,12 +24,18 @@ const ipv6CountInput = document.getElementById('ipv6-count');
 const backButtons = document.querySelectorAll('.back-btn');
 const qrPopup = document.getElementById('qr-popup');
 const qrCloseBtn = document.querySelector('.qr-close-btn');
-const startConfigBtn = document.getElementById('start-config-btn');
+const addDnsBtn = document.getElementById('add-dns-btn');
+const dnsPopup = document.getElementById('dns-popup');
+const dnsCloseBtn = document.getElementById('dns-close-btn');
+const manualDnsInput = document.getElementById('manual-dns-input');
+const addManualDnsBtn = document.getElementById('add-manual-dns');
+const dnsList = document.getElementById('dns-list');
 
 let ipv4List = [];
 let ipv6List = [];
 let selectedDNS = null;
 let selectedEndpointType = null;
+let selectedDNSServers = ['1.1.1.1', '1.0.0.1', '2606:4700:4700::1111', '2606:4700:4700::1001']; // Default DNS
 
 const loadIPLists = async () => {
     const [ipv4Response, ipv6Response] = await Promise.all([
@@ -39,13 +45,6 @@ const loadIPLists = async () => {
     ipv4List = await ipv4Response.json();
     ipv6List = await ipv6Response.json();
 };
-
-// Show configuration options when "Start Configuring" is clicked
-startConfigBtn.addEventListener('click', () => {
-    startConfigBtn.classList.add('hidden');
-    wireguardPurpose.classList.remove('hidden');
-    wireguardPurpose.scrollIntoView({ behavior: 'smooth', block: 'start' });
-});
 
 vpnBtn.addEventListener('click', () => {
     wireguardPurpose.classList.add('hidden');
@@ -154,6 +153,34 @@ homeBtn.addEventListener('click', () => {
     wireguardPurpose.classList.remove('hidden');
 });
 
+addDnsBtn.addEventListener('click', () => {
+    dnsPopup.classList.remove('hidden');
+});
+
+dnsCloseBtn.addEventListener('click', () => {
+    dnsPopup.classList.add('hidden');
+    manualDnsInput.value = '';
+});
+
+addManualDnsBtn.addEventListener('click', () => {
+    const dns = manualDnsInput.value.trim();
+    if (dns && isValidIP(dns)) {
+        addDnsToList(dns);
+        dnsPopup.classList.add('hidden');
+        manualDnsInput.value = '';
+    } else {
+        showPopup('Please enter a valid IP address', 'error');
+    }
+});
+
+document.querySelectorAll('.dns-choice').forEach(btn => {
+    btn.addEventListener('click', () => {
+        const dns = btn.getAttribute('data-dns').split(', ');
+        dns.forEach(ip => addDnsToList(ip));
+        dnsPopup.classList.add('hidden');
+    });
+});
+
 async function generatePersonalConfig(peerCount, ipv4Count, ipv6Count) {
     try {
         showSpinner();
@@ -181,7 +208,6 @@ async function generatePersonalConfig(peerCount, ipv4Count, ipv6Count) {
         }
     } catch (error) {
         console.error('Error processing configuration:', error);
-        showPopup('Error generating configuration. Please try again.');
     } finally {
         hideSpinner();
         getConfigBtn.disabled = false;
@@ -248,7 +274,6 @@ MTU = 1280`;
         }
     } catch (error) {
         console.error('Error processing configuration:', error);
-        showPopup('Error generating DNS configuration. Please try again.');
     } finally {
         hideSpinner();
         scrollToConfig();
@@ -295,7 +320,7 @@ const generateWireGuardConfig = (data, privateKey, peerCount, ipv4Count, ipv6Cou
     let configText = `[Interface]
 PrivateKey = ${privateKey}
 Address = ${data.config.interface.addresses.v4}/32, ${data.config.interface.addresses.v6}/128
-DNS = 1.1.1.1, 1.0.0.1, 2606:4700:4700::1111, 2606:4700:4700::1001
+DNS = ${selectedDNSServers.join(', ')}
 MTU = 1280
 
 `;
@@ -338,9 +363,6 @@ const updateDOMWithQR = (container, title, textareaId, content, messageId, qrId)
     if (container.classList.contains('wire-guard-config')) {
         container.innerHTML = `
             <h2><i class="fas fa-code"></i> ${title}</h2>
-            <div class="config-preview">
-                <img src="https://via.placeholder.com/100x100.png?text=Config+Preview" alt="Config Preview">
-            </div>
             <button class="download-icon-btn" id="wireguard-download-btn">
                 <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                     <path d="M19 3H5a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2V5a2 2 0 00-2-2zM12 16l-4-4h3V8h2v4h3l-4 4z" />
@@ -353,9 +375,6 @@ const updateDOMWithQR = (container, title, textareaId, content, messageId, qrId)
     } else {
         container.innerHTML = `
             <h2><i class="fas fa-code"></i> ${title}</h2>
-            <div class="config-preview">
-                <img src="https://via.placeholder.com/100x100.png?text=V2Ray+Preview" alt="V2Ray Preview">
-            </div>
             <textarea id="${textareaId}" readonly>${content.trim()}</textarea>
             <button class="copy-button" data-target="${textareaId}" data-message="${messageId}"><i class="fas fa-copy"></i> Copy ${title}</button>
             <button class="qr-button" data-content="${content.trim()}"><i class="fas fa-qrcode"></i> Show QR</button>
@@ -440,9 +459,10 @@ const showCopyMessage = (messageId, message, type = 'success') => {
     }
 };
 
-const showPopup = (message) => {
+const showPopup = (message, type = 'success') => {
     const popup = document.createElement('div');
     popup.classList.add('popup-message');
+    if (type === 'error') popup.classList.add('error');
     popup.innerHTML = `${message} <button class="close-btn"><i class="fas fa-times"></i></button>`;
     document.body.appendChild(popup);
 
@@ -476,23 +496,64 @@ const downloadConfig = (fileName, content) => {
 };
 
 const scrollToConfig = () => {
-    wireGuardConfig.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    setTimeout(() => {
+        if (wireGuardConfig.firstChild || v2rayConfig.firstChild) {
+            wireGuardConfig.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+    }, 300);
 };
 
-// Update footer with current year
-document.getElementById('current-year').textContent = new Date().getFullYear();
+function addDnsToList(dns) {
+    if (!selectedDNSServers.includes(dns)) {
+        selectedDNSServers.push(dns);
+        updateDnsList();
+    }
+}
 
-// Fetch and display IP info
-fetch('https://ipapi.co/json/')
-    .then(response => response.json())
-    .then(data => {
+function removeDnsFromList(dns) {
+    selectedDNSServers = selectedDNSServers.filter(ip => ip !== dns);
+    updateDnsList();
+}
+
+function updateDnsList() {
+    dnsList.innerHTML = '';
+    selectedDNSServers.forEach(dns => {
+        const dnsItem = document.createElement('div');
+        dnsItem.classList.add('dns-item');
+        dnsItem.innerHTML = `
+            <span>${dns}</span>
+            <button class="remove-dns" data-dns="${dns}"><i class="fas fa-times"></i></button>
+        `;
+        dnsList.appendChild(dnsItem);
+    });
+    document.querySelectorAll('.remove-dns').forEach(btn => {
+        btn.addEventListener('click', () => {
+            removeDnsFromList(btn.getAttribute('data-dns'));
+        });
+    });
+}
+
+function isValidIP(ip) {
+    const ipv4Regex = /^(\d{1,3}\.){3}\d{1,3}$/;
+    const ipv6Regex = /^([0-9a-fA-F]{0,4}:){7}[0-9a-fA-F]{0,4}$/;
+    return ipv4Regex.test(ip) || ipv6Regex.test(ip);
+}
+
+const fetchIPInfo = async () => {
+    try {
+        const response = await fetch('https://ipapi.co/json/');
+        const data = await response.json();
         document.getElementById('user-ip').textContent = data.ip || 'Unknown';
         document.getElementById('user-country').textContent = data.country_name || 'Unknown';
-    })
-    .catch(() => {
+    } catch (error) {
+        console.error('Error fetching IP info:', error);
         document.getElementById('user-ip').textContent = 'Error';
         document.getElementById('user-country').textContent = 'Error';
-    });
+    }
+};
 
-// Initial load of IP lists
-loadIPLists();
+// Initialize DNS list and fetch IP info on load
+document.addEventListener('DOMContentLoaded', () => {
+    fetchIPInfo();
+    updateDnsList();
+});
