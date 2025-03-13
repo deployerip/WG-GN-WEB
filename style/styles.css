@@ -322,13 +322,15 @@ button:hover:not(:disabled) {
   right: -10px;
   background: none;
   border: none;
-  color: #ff6b6b;
-  font-size: 24px;
+  color: #ff6b6b; /* Red color for visibility */
+  font-size: 24px; /* Size matches the "×" icon naturally */
   cursor: pointer;
+  transition: color 0.3s ease;
+  box-shadow: none; /* Explicitly no shadow */
 }
 
 .qr-close-btn:hover {
-  color: #ff8787;
+  color: #ff8787; /* Lighter red on hover */
 }
 
 .popup-message {
@@ -419,6 +421,7 @@ footer .ip-info {
   flex-wrap: wrap;
 }
 
+/* New DNS Popup Styles */
 .dns-list {
     margin: 10px 0;
     display: flex;
@@ -435,18 +438,26 @@ footer .ip-info {
     align-items: center;
     gap: 10px;
     box-shadow: 0 3px 6px rgba(0, 0, 0, 0.1);
+    cursor: pointer; /* Indicate clickable */
+    transition: background 0.3s ease;
+}
+
+.dns-item:hover {
+    background: #e8e9f0; /* Subtle hover effect */
 }
 
 .remove-dns {
     background: none;
     border: none;
-    color: #ff6b6b;
-    font-size: 18px;
+    color: #ff6b6b; /* Red color for visibility */
+    font-size: 18px; /* Size matches the "×" icon naturally */
     cursor: pointer;
+    transition: color 0.3s ease;
+    box-shadow: none; /* Explicitly no shadow */
 }
 
 .remove-dns:hover {
-    color: #ff8787;
+    color: #ff8787; /* Lighter red on hover */
 }
 
 .add-dns-btn {
@@ -484,13 +495,15 @@ footer .ip-info {
     right: -10px;
     background: none;
     border: none;
-    color: #ff6b6b;
-    font-size: 24px;
+    color: #ff6b6b; /* Red color for visibility */
+    font-size: 24px; /* Size matches the "×" icon naturally */
     cursor: pointer;
+    transition: color 0.3s ease;
+    box-shadow: none; /* Explicitly no shadow */
 }
 
 .dns-close-btn:hover {
-    color: #ff8787;
+    color: #ff8787; /* Lighter red on hover */
 }
 
 .dns-popup h3 {
