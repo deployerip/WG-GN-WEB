@@ -322,15 +322,15 @@ button:hover:not(:disabled) {
   right: -10px;
   background: none;
   border: none;
-  color: #ff6b6b; /* Red color for visibility */
-  font-size: 24px; /* Size matches the "×" icon naturally */
+  color: #ff6b6b;
+  font-size: 24px;
   cursor: pointer;
   transition: color 0.3s ease;
-  box-shadow: none; /* Explicitly no shadow */
+  box-shadow: none;
 }
 
 .qr-close-btn:hover {
-  color: #ff8787; /* Lighter red on hover */
+  color: #ff8787;
 }
 
 .popup-message {
@@ -421,7 +421,7 @@ footer .ip-info {
   flex-wrap: wrap;
 }
 
-/* New DNS Popup Styles */
+/* DNS Popup Styles */
 .dns-list {
     margin: 10px 0;
     display: flex;
@@ -438,26 +438,26 @@ footer .ip-info {
     align-items: center;
     gap: 10px;
     box-shadow: 0 3px 6px rgba(0, 0, 0, 0.1);
-    cursor: pointer; /* Indicate clickable */
+    cursor: pointer;
     transition: background 0.3s ease;
 }
 
 .dns-item:hover {
-    background: #e8e9f0; /* Subtle hover effect */
+    background: #e8e9f0;
 }
 
 .remove-dns {
     background: none;
     border: none;
-    color: #ff6b6b; /* Red color for visibility */
-    font-size: 18px; /* Size matches the "×" icon naturally */
+    color: #ff6b6b;
+    font-size: 18px;
     cursor: pointer;
     transition: color 0.3s ease;
-    box-shadow: none; /* Explicitly no shadow */
+    box-shadow: none;
 }
 
 .remove-dns:hover {
-    color: #ff8787; /* Lighter red on hover */
+    color: #ff8787;
 }
 
 .add-dns-btn {
@@ -495,15 +495,15 @@ footer .ip-info {
     right: -10px;
     background: none;
     border: none;
-    color: #ff6b6b; /* Red color for visibility */
-    font-size: 24px; /* Size matches the "×" icon naturally */
+    color: #ff6b6b;
+    font-size: 24px;
     cursor: pointer;
     transition: color 0.3s ease;
-    box-shadow: none; /* Explicitly no shadow */
+    box-shadow: none;
 }
 
 .dns-close-btn:hover {
-    color: #ff8787; /* Lighter red on hover */
+    color: #ff8787;
 }
 
 .dns-popup h3 {
@@ -551,4 +551,123 @@ footer .ip-info {
 
 .dns-choice:hover {
     background: #3b6db5;
+}
+
+/* New DNS Manager Styles */
+.dns-manager-btn {
+    background: #0984e3;
+    color: #fff;
+    padding: 10px 20px;
+    margin: 10px auto;
+}
+
+.dns-manager-btn:hover {
+    background: #3498db;
+}
+
+.dns-manager-list {
+    margin: 20px 0;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 15px;
+    justify-content: center;
+}
+
+.dns-manager-item {
+    background: #f8f9fd;
+    padding: 10px 20px;
+    border-radius: 20px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    box-shadow: 0 3px 6px rgba(0, 0, 0, 0.1);
+    cursor: pointer;
+    transition: background 0.3s ease, transform 0.3s ease;
+}
+
+.dns-manager-item:hover {
+    background: #e8e9f0;
+}
+
+.dns-manager-item.selected {
+    background: #55efc4;
+    transform: scale(1.05);
+}
+
+.dns-manager-header {
+    display: flex;
+    gap: 10px;
+    justify-content: flex-start;
+    margin-bottom: 20px;
+}
+
+.select-btn, .select-all-btn, .delete-btn {
+    background: #2a5298;
+    color: #fff;
+    padding: 8px 15px;
+}
+
+.select-btn:hover, .select-all-btn:hover, .delete-btn:hover {
+    background: #3b6db5;
+}
+
+.save-btn {
+    background: #55efc4;
+    color: #333;
+    width: 100%;
+    max-width: 200px;
+    margin: 20px auto;
+}
+
+.save-btn:hover {
+    background: #81fce0;
+}
+
+.confirm-popup {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: #fff;
+    padding: 20px;
+    border-radius: 15px;
+    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.3);
+    z-index: 2000;
+    width: 90%;
+    max-width: 400px;
+}
+
+.confirm-popup-content {
+    text-align: center;
+}
+
+.confirm-popup h3 {
+    color: #2a5298;
+    margin-bottom: 15px;
+}
+
+.confirm-buttons {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    margin-top: 20px;
+}
+
+.confirm-btn {
+    background: #ff6b6b;
+    color: #fff;
+    padding: 10px 20px;
+}
+
+.confirm-btn:hover {
+    background: #ff8787;
+}
+
+.confirm-btn:nth-child(2) {
+    background: #55efc4;
+    color: #333;
+}
+
+.confirm-btn:nth-child(2):hover {
+    background: #81fce0;
 }
