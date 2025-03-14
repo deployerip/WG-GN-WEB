@@ -171,8 +171,8 @@ button:hover:not(:disabled) {
 .get-btn {
   background: #55efc4;
   color: #333;
-  margin: 0 auto; /* Center the button horizontally */
-  display: block; /* Ensure it takes up the full width available */
+  margin: 0 auto;
+  display: block;
 }
 
 .get-btn:hover {
@@ -471,14 +471,20 @@ footer .ip-info {
 .add-dns-btn {
     background: #55efc4;
     color: #333;
-    padding: 10px 20px;
-    margin: 10px auto;
-    display: block;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+    margin: 0 15px 15px 0;
     font-size: 20px;
 }
 
 .add-dns-btn:hover {
     background: #81fce0;
+    transform: scale(1.1);
 }
 
 .dns-popup {
