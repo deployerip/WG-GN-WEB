@@ -36,6 +36,7 @@ const dnsPopup = document.getElementById('dns-popup');
 const dnsCloseBtn = document.getElementById('dns-close-btn');
 const manualDnsInput = document.getElementById('manual-dns-input');
 const addManualDnsBtn = document.getElementById('add-manual-dns');
+const addDnsBtn = document.getElementById('add-dns-btn');
 const confirmExitPopup = document.getElementById('confirm-exit-popup');
 const confirmYesBtn = document.getElementById('confirm-yes-btn');
 const confirmNoBtn = document.getElementById('confirm-no-btn');
@@ -204,7 +205,15 @@ selectBtn.addEventListener('click', () => {
 
 selectAllBtn.addEventListener('click', () => {
     const items = document.querySelectorAll('.dns-manager-item');
-    items.forEach(item => item.classList.add('selected'));
+    const anySelected = Array.from(items).some(item => item.classList.contains('selected'));
+    
+    if (anySelected) {
+        // If any are selected, deselect all
+        items.forEach(item => item.classList.remove('selected'));
+    } else {
+        // If none are selected, select all
+        items.forEach(item => item.classList.add('selected'));
+    }
 });
 
 deleteBtn.addEventListener('click', () => {
@@ -220,6 +229,12 @@ saveDnsBtn.addEventListener('click', () => {
     updateDnsCount();
     dnsManager.classList.add('hidden');
     customPeers.classList.remove('hidden');
+});
+
+addDnsBtn.addEventListener('click', () => {
+    dnsPopup.classList.remove('hidden');
+    manualDnsInput.value = '';
+    editingDNS = null;
 });
 
 confirmYesBtn.addEventListener('click', () => {
@@ -532,7 +547,7 @@ function updateDnsManagerList() {
         dnsItem.classList.add('dns-manager-item');
         dnsItem.setAttribute('data-dns', dns);
         dnsItem.innerHTML = `<span>${brand}</span>`;
-        
+
         if (isSelecting) {
             dnsItem.addEventListener('click', () => {
                 dnsItem.classList.toggle('selected');
@@ -544,7 +559,7 @@ function updateDnsManagerList() {
                 dnsPopup.classList.remove('hidden');
             });
         }
-        
+
         dnsManagerList.appendChild(dnsItem);
     });
 }
