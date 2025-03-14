@@ -24,19 +24,42 @@ const ipv6CountInput = document.getElementById('ipv6-count');
 const backButtons = document.querySelectorAll('.back-btn');
 const qrPopup = document.getElementById('qr-popup');
 const qrCloseBtn = document.querySelector('.qr-close-btn');
-const addDnsBtn = document.getElementById('add-dns-btn');
+const dnsManagerBtn = document.getElementById('dns-manager-btn');
+const dnsManager = document.getElementById('dns-manager');
+const dnsManagerList = document.getElementById('dns-manager-list');
+const selectBtn = document.getElementById('select-btn');
+const selectAllBtn = document.getElementById('select-all-btn');
+const deleteBtn = document.getElementById('delete-btn');
+const saveDnsBtn = document.getElementById('save-dns-btn');
+const dnsBackBtn = document.querySelector('.dns-back-btn');
 const dnsPopup = document.getElementById('dns-popup');
 const dnsCloseBtn = document.getElementById('dns-close-btn');
 const manualDnsInput = document.getElementById('manual-dns-input');
 const addManualDnsBtn = document.getElementById('add-manual-dns');
-const dnsList = document.getElementById('dns-list');
+const confirmExitPopup = document.getElementById('confirm-exit-popup');
+const confirmYesBtn = document.getElementById('confirm-yes-btn');
+const confirmNoBtn = document.getElementById('confirm-no-btn');
 
 let ipv4List = [];
 let ipv6List = [];
 let selectedDNS = null;
 let selectedEndpointType = null;
-let selectedDNSServers = ['1.1.1.1', '1.0.0.1', '2606:4700:4700::1111', '2606:4700:4700::1001']; // Default DNS
-let editingDNS = null; // Track DNS being edited
+let selectedDNSServers = ['1.1.1.1', '1.0.0.1', '2606:4700:4700::1111', '2606:4700:4700::1001'];
+let tempDNSServers = [...selectedDNSServers];
+let editingDNS = null;
+let isSelecting = false;
+
+const dnsBrands = {
+    '1.1.1.1': 'Cloudflare', '1.0.0.1': 'Cloudflare',
+    '8.8.8.8': 'Google', '8.8.4.4': 'Google',
+    '94.140.14.14': 'AdGuard', '94.140.15.15': 'AdGuard',
+    '9.9.9.9': 'Quad9', '149.112.112.112': 'Quad9',
+    '208.67.222.222': 'OpenDNS', '208.67.220.220': 'OpenDNS',
+    '178.22.122.100': 'Shecan', '185.51.200.2': 'Shecan',
+    '10.202.10.202': '403 Online', '10.202.10.102': '403 Online',
+    '78.157.42.101': 'Electro', '78.157.42.100': 'Electro',
+    '2606:4700:4700::1111': 'Cloudflare', '2606:4700:4700::1001': 'Cloudflare'
+};
 
 const loadIPLists = async () => {
     const [ipv4Response, ipv6Response] = await Promise.all([
@@ -47,6 +70,7 @@ const loadIPLists = async () => {
     ipv6List = await ipv6Response.json();
 };
 
+// Navigation Event Listeners
 vpnBtn.addEventListener('click', () => {
     wireguardPurpose.classList.add('hidden');
     vpnOptions.classList.remove('hidden');
@@ -124,17 +148,26 @@ opendnsBtn.addEventListener('click', () => {
 
 backButtons.forEach(btn => {
     btn.addEventListener('click', () => {
-        const currentSection = btn.closest('div:not(.hidden)');
-        if (currentSection.id === 'vpn-options' || currentSection.id === 'dns-options') {
-            currentSection.classList.add('hidden');
-            wireguardPurpose.classList.remove('hidden');
-        } else if (currentSection.id === 'custom-peers') {
-            currentSection.classList.add('hidden');
-            vpnOptions.classList.remove('hidden');
+        if (btn.classList.contains('dns-back-btn')) {
+            if (JSON.stringify(selectedDNSServers) !== JSON.stringify(tempDNSServers)) {
+                confirmExitPopup.classList.remove('hidden');
+            } else {
+                dnsManager.classList.add('hidden');
+                customPeers.classList.remove('hidden');
+            }
+        } else {
+            const currentSection = btn.closest('div:not(.hidden)');
+            if (currentSection.id === 'vpn-options' || currentSection.id === 'dns-options') {
+                currentSection.classList.add('hidden');
+                wireguardPurpose.classList.remove('hidden');
+            } else if (currentSection.id === 'custom-peers') {
+                currentSection.classList.add('hidden');
+                vpnOptions.classList.remove('hidden');
+            }
+            wireGuardConfig.innerHTML = '';
+            v2rayConfig.innerHTML = '';
+            homeBtn.style.display = 'none';
         }
-        wireGuardConfig.innerHTML = '';
-        v2rayConfig.innerHTML = '';
-        homeBtn.style.display = 'none';
     });
 });
 
@@ -154,35 +187,73 @@ homeBtn.addEventListener('click', () => {
     wireguardPurpose.classList.remove('hidden');
 });
 
-addDnsBtn.addEventListener('click', () => {
-    editingDNS = null; // Reset editing state
-    manualDnsInput.value = '';
-    dnsPopup.classList.remove('hidden');
+// DNS Manager Event Listeners
+dnsManagerBtn.addEventListener('click', () => {
+    customPeers.classList.add('hidden');
+    dnsManager.classList.remove('hidden');
+    updateDnsManagerList();
 });
 
+selectBtn.addEventListener('click', () => {
+    isSelecting = !isSelecting;
+    selectBtn.innerHTML = isSelecting ? '<i class="fas fa-times"></i> Cancel' : '<i class="fas fa-check-square"></i> Select';
+    selectAllBtn.classList.toggle('hidden', !isSelecting);
+    deleteBtn.classList.toggle('hidden', !isSelecting);
+    updateDnsManagerList();
+});
+
+selectAllBtn.addEventListener('click', () => {
+    const items = document.querySelectorAll('.dns-manager-item');
+    items.forEach(item => item.classList.add('selected'));
+});
+
+deleteBtn.addEventListener('click', () => {
+    tempDNSServers = tempDNSServers.filter(dns => {
+        const item = document.querySelector(`.dns-manager-item[data-dns="${dns}"]`);
+        return !item || !item.classList.contains('selected');
+    });
+    updateDnsManagerList();
+});
+
+saveDnsBtn.addEventListener('click', () => {
+    selectedDNSServers = [...tempDNSServers];
+    updateDnsCount();
+    dnsManager.classList.add('hidden');
+    customPeers.classList.remove('hidden');
+});
+
+confirmYesBtn.addEventListener('click', () => {
+    tempDNSServers = [...selectedDNSServers];
+    confirmExitPopup.classList.add('hidden');
+    dnsManager.classList.add('hidden');
+    customPeers.classList.remove('hidden');
+});
+
+confirmNoBtn.addEventListener('click', () => {
+    confirmExitPopup.classList.add('hidden');
+});
+
+// DNS Popup Event Listeners
 dnsCloseBtn.addEventListener('click', () => {
     dnsPopup.classList.add('hidden');
     manualDnsInput.value = '';
-    editingDNS = null; // Reset editing state
+    editingDNS = null;
 });
 
 addManualDnsBtn.addEventListener('click', () => {
     const dns = manualDnsInput.value.trim();
     if (dns && isValidIP(dns)) {
         if (editingDNS) {
-            // Replace the old DNS with the new one
-            const index = selectedDNSServers.indexOf(editingDNS);
-            if (index !== -1) {
-                selectedDNSServers[index] = dns;
-            }
+            const index = tempDNSServers.indexOf(editingDNS);
+            if (index !== -1) tempDNSServers[index] = dns;
             editingDNS = null;
         } else {
             addDnsToList(dns);
         }
         dnsPopup.classList.add('hidden');
         manualDnsInput.value = '';
-        updateDnsList();
-    } else {
+        updateDnsManagerList();
+    } else if (dns) {
         showPopup('Please enter a valid IP address', 'error');
     }
 });
@@ -192,20 +263,23 @@ document.querySelectorAll('.dns-choice').forEach(btn => {
         const dns = btn.getAttribute('data-dns').split(', ');
         dns.forEach(ip => {
             if (editingDNS) {
-                const index = selectedDNSServers.indexOf(editingDNS);
-                if (index !== -1) {
-                    selectedDNSServers[index] = ip;
-                }
+                const index = tempDNSServers.indexOf(editingDNS);
+                if (index !== -1) tempDNSServers[index] = ip;
                 editingDNS = null;
             } else {
                 addDnsToList(ip);
             }
         });
         dnsPopup.classList.add('hidden');
-        updateDnsList();
+        updateDnsManagerList();
     });
 });
 
+qrCloseBtn.addEventListener('click', () => {
+    qrPopup.style.display = 'none';
+});
+
+// Config Generation Functions
 async function generatePersonalConfig(peerCount, ipv4Count, ipv6Count) {
     try {
         showSpinner();
@@ -233,6 +307,7 @@ async function generatePersonalConfig(peerCount, ipv4Count, ipv6Count) {
         }
     } catch (error) {
         console.error('Error processing configuration:', error);
+        showPopup('Error generating configuration', 'error');
     } finally {
         hideSpinner();
         getConfigBtn.disabled = false;
@@ -299,12 +374,14 @@ MTU = 1280`;
         }
     } catch (error) {
         console.error('Error processing configuration:', error);
+        showPopup('Error generating DNS configuration', 'error');
     } finally {
         hideSpinner();
         scrollToConfig();
     }
 }
 
+// API and Utility Functions
 const fetchKeys = async () => {
     const response = await fetch('https://wg.demo-keys-reg.workers.dev/keys');
     if (!response.ok) throw new Error(`Failed to fetch keys: ${response.status}`);
@@ -446,10 +523,44 @@ const addQRListener = (content) => {
     });
 };
 
-qrCloseBtn.addEventListener('click', () => {
-    qrPopup.style.display = 'none';
-});
+// DNS Manager Functions
+function updateDnsManagerList() {
+    dnsManagerList.innerHTML = '';
+    tempDNSServers.forEach(dns => {
+        const brand = dnsBrands[dns] || dns;
+        const dnsItem = document.createElement('div');
+        dnsItem.classList.add('dns-manager-item');
+        dnsItem.setAttribute('data-dns', dns);
+        dnsItem.innerHTML = `<span>${brand}</span>`;
+        
+        if (isSelecting) {
+            dnsItem.addEventListener('click', () => {
+                dnsItem.classList.toggle('selected');
+            });
+        } else {
+            dnsItem.addEventListener('click', () => {
+                editingDNS = dns;
+                manualDnsInput.value = dns;
+                dnsPopup.classList.remove('hidden');
+            });
+        }
+        
+        dnsManagerList.appendChild(dnsItem);
+    });
+}
 
+function updateDnsCount() {
+    document.getElementById('dns-count').textContent = selectedDNSServers.length;
+}
+
+function addDnsToList(dns) {
+    if (!tempDNSServers.includes(dns)) {
+        tempDNSServers.push(dns);
+        updateDnsManagerList();
+    }
+}
+
+// Utility Functions
 const showSpinner = () => {
     document.querySelector('.spinner').style.display = 'flex';
     document.querySelector('main').style.opacity = '0';
@@ -528,43 +639,6 @@ const scrollToConfig = () => {
     }, 300);
 };
 
-function addDnsToList(dns) {
-    if (!selectedDNSServers.includes(dns)) {
-        selectedDNSServers.push(dns);
-        updateDnsList();
-    }
-}
-
-function removeDnsFromList(dns) {
-    selectedDNSServers = selectedDNSServers.filter(ip => ip !== dns);
-    updateDnsList();
-}
-
-function updateDnsList() {
-    dnsList.innerHTML = '';
-    selectedDNSServers.forEach(dns => {
-        const dnsItem = document.createElement('div');
-        dnsItem.classList.add('dns-item');
-        dnsItem.innerHTML = `
-            <span>${dns}</span>
-            <button class="remove-dns" data-dns="${dns}"><i class="fas fa-times"></i></button>
-        `;
-        dnsList.appendChild(dnsItem);
-
-        // Add click event to edit DNS
-        dnsItem.querySelector('span').addEventListener('click', () => {
-            editingDNS = dns;
-            manualDnsInput.value = dns;
-            dnsPopup.classList.remove('hidden');
-        });
-
-        // Add remove event
-        dnsItem.querySelector('.remove-dns').addEventListener('click', () => {
-            removeDnsFromList(dns);
-        });
-    });
-}
-
 function isValidIP(ip) {
     const ipv4Regex = /^(\d{1,3}\.){3}\d{1,3}$/;
     const ipv6Regex = /^([0-9a-fA-F]{0,4}:){7}[0-9a-fA-F]{0,4}$/;
@@ -584,8 +658,8 @@ const fetchIPInfo = async () => {
     }
 };
 
-// Initialize DNS list and fetch IP info on load
+// Initialize
 document.addEventListener('DOMContentLoaded', () => {
     fetchIPInfo();
-    updateDnsList();
+    updateDnsCount();
 });
