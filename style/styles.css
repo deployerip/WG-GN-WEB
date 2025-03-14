@@ -95,14 +95,19 @@ button:hover:not(:disabled) {
 
 .back-btn,
 .home-btn {
-  background: #ff6b6b;
-  color: #fff;
+  color: rgb(0, 0, 0);
   margin: 0 auto 25px;
+  background: none;
+  box-shadow: none;
+  border: none;
 }
 
 .back-btn:hover,
 .home-btn:hover {
-  background: #ff8787;
+  background: none; 
+  border-color: #000000;
+  color: #000000;
+  box-shadow: none;
 }
 
 .choice-btn {
@@ -166,6 +171,8 @@ button:hover:not(:disabled) {
 .get-btn {
   background: #55efc4;
   color: #333;
+  margin: 0 auto; /* Center the button horizontally */
+  display: block; /* Ensure it takes up the full width available */
 }
 
 .get-btn:hover {
@@ -175,7 +182,7 @@ button:hover:not(:disabled) {
 .download-icon-btn {
   background: none;
   box-shadow: none;
-  padding: 0;
+  padding: 0%;
   margin: 20px auto;
   cursor: pointer;
   transition: transform 0.3s ease;
@@ -186,8 +193,8 @@ button:hover:not(:disabled) {
 }
 
 .download-icon-btn svg {
-  width: 80px;
-  height: 80px;
+  width: 200px;
+  height: 200px;
   fill: #74b9ff;
 }
 
@@ -205,6 +212,7 @@ button:hover:not(:disabled) {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
   gap: 20px;
+  align-items: center;
 }
 
 @media (max-width: 767px) {
@@ -318,11 +326,11 @@ button:hover:not(:disabled) {
 
 .qr-close-btn {
   position: absolute;
-  top: -10px;
-  right: -10px;
+  top: -60px;
+  right: -60px;
   background: none;
   border: none;
-  color: #ff6b6b;
+  color: #000000;
   font-size: 24px;
   cursor: pointer;
   transition: color 0.3s ease;
@@ -330,7 +338,7 @@ button:hover:not(:disabled) {
 }
 
 .qr-close-btn:hover {
-  color: #ff8787;
+  color: #000000;
 }
 
 .popup-message {
@@ -614,7 +622,6 @@ footer .ip-info {
 .save-btn {
     background: #55efc4;
     color: #333;
-    width: 100%;
     max-width: 200px;
     margin: 20px auto;
 }
