@@ -36,7 +36,6 @@ const dnsPopup = document.getElementById('dns-popup');
 const dnsCloseBtn = document.getElementById('dns-close-btn');
 const manualDnsInput = document.getElementById('manual-dns-input');
 const addManualDnsBtn = document.getElementById('add-manual-dns');
-const addDnsBtn = document.getElementById('add-dns-btn');
 const confirmExitPopup = document.getElementById('confirm-exit-popup');
 const confirmYesBtn = document.getElementById('confirm-yes-btn');
 const confirmNoBtn = document.getElementById('confirm-no-btn');
@@ -205,13 +204,13 @@ selectBtn.addEventListener('click', () => {
 
 selectAllBtn.addEventListener('click', () => {
     const items = document.querySelectorAll('.dns-manager-item');
-    const anySelected = Array.from(items).some(item => item.classList.contains('selected'));
+    const allSelected = Array.from(items).every(item => item.classList.contains('selected'));
     
-    if (anySelected) {
-        // If any are selected, deselect all
+    if (allSelected) {
+        // If all are selected, deselect all
         items.forEach(item => item.classList.remove('selected'));
     } else {
-        // If none are selected, select all
+        // If any are unselected, select all
         items.forEach(item => item.classList.add('selected'));
     }
 });
@@ -229,12 +228,6 @@ saveDnsBtn.addEventListener('click', () => {
     updateDnsCount();
     dnsManager.classList.add('hidden');
     customPeers.classList.remove('hidden');
-});
-
-addDnsBtn.addEventListener('click', () => {
-    dnsPopup.classList.remove('hidden');
-    manualDnsInput.value = '';
-    editingDNS = null;
 });
 
 confirmYesBtn.addEventListener('click', () => {
@@ -541,6 +534,19 @@ const addQRListener = (content) => {
 // DNS Manager Functions
 function updateDnsManagerList() {
     dnsManagerList.innerHTML = '';
+    
+    // Add the + button at the start
+    const addButton = document.createElement('button');
+    addButton.classList.add('add-dns-btn');
+    addButton.innerHTML = '<i class="fas fa-plus"></i>';
+    addButton.addEventListener('click', () => {
+        manualDnsInput.value = '';
+        editingDNS = null;
+        dnsPopup.classList.remove('hidden');
+    });
+    dnsManagerList.appendChild(addButton);
+
+    // Add existing DNS entries
     tempDNSServers.forEach(dns => {
         const brand = dnsBrands[dns] || dns;
         const dnsItem = document.createElement('div');
